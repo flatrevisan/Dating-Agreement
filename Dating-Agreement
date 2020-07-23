@@ -12,9 +12,10 @@ contract DatingAgreement
     
     address payable public lawyer;
     
-    mapping (address => loversMatch) match;
+    mapping (address => loversMatch) hooked;
     
-    event statusCommitment (address _party1, address _party2, string _status);
+    event statusCommitment (hooked, statuses);
+    event feesReceived (address, uint256, string);
     
     enum statuses { Single, Dating, CommonLawMarriage }
     statuses currentStatus;
@@ -37,36 +38,35 @@ contract DatingAgreement
         _;
     }
     
-    function identifyLovers  (string memory _name, address payable _party) payable public
+    function identifyLovers  (string memory _name, address payable _party) payable public costs (1 ether)
    {
         ids = ids+1;
         
-       match [ids] = Investor (_nameOfInvestor, _accountOfInvestor, msg.value, _sharesAcquired, ids);
-    
-        emit remainingShares (msg.sender, sharesAvailable);
+        hooked [ids] = Lovers (_name, _party, msg.value,ids);
     }
     
-    function commit () payable public onlyWhileUncommitted costs (1 ether)
+    function commit () payable public
     {
         currentStatus = statuses.Dating;
-        party1.transfer(msg.value);
-        emit Occupy (msg.sender, msg.value);
+        msg.sender.transfer (msg.value);
+        lawyer.transfer (msg.value);
+        emit statusCommitment (hooked, statuses);
     }
     
-    receive () external payable onlyWhileVacant costs (2 ether)
+    function payFee () external payable
     {
-        currentStatus = Statuses.Occupied;
-        owner.transfer(msg.value);
-        emit Occupy (msg.sender, msg.value);
+        lawyer.transfer (msg.value);
+        emit feesReceived (msg.sender, msg.value, "Legal Fees received. Thank You!");
     }    
     
-    function book () payable public 
-    //check price and check status
+    function commitFurther () payable public costs (1 ether) 
     {
-        require (msg.value >= 2 ether, "Not enough Ether provided."); 
-        require (currentStatus == Statuses.Vacant, "Currently occupied.");
-        currentStatus = Statuses.Occupied;
-        owner.transfer(msg.value);
+        require (msg.value >= 1 ether, "Not enough Ether provided."); 
+        require (currentStatus == statuses.Dating, "Already Committed.");
+        require ( );
+        currentStatus = statuses.CommonLawMarriage;
+        msg.sender.transfer(msg.value);
+        
     }
     
     
