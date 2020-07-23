@@ -67,9 +67,8 @@ contract DatingAgreement
     
     function confirmStatus () public view returns (address, address)
     {
-        return hooked[1];
-        return hooked[2];
-        return currentStatus= statuses.Dating;
+        return hooked[1].party; 
+        return hooked[2].party;
     }
     
     function commitFurther () payable public costs (1 ether) 
