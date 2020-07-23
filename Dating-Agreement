@@ -1,0 +1,73 @@
+//SPDX-License-Identifier: CC-BY-4.0
+pragma solidity 0.6.10;
+
+contract DatingAgreement 
+{
+    struct Lovers 
+    {
+        string name;
+        address payable party;
+        uint id;
+    }
+    
+    address payable public lawyer;
+    
+    mapping (address => loversMatch) match;
+    
+    event statusCommitment (address _party1, address _party2, string _status);
+    
+    enum statuses { Single, Dating, CommonLawMarriage }
+    statuses currentStatus;
+    
+    constructor () public
+    {
+        lawyer = 0x888cDa7b74D2364FfBA6c27FeFF2237501B85DF6;
+        currentStatus = statuses.Single;
+    }
+    
+    modifier onlyWhileUncommitted
+    {
+        require (currentStatus == statuses.Single, 'Currently in a committed relationship.');
+        _;
+    }
+    
+    modifier costs (uint _fee)
+    {  
+        require (msg.value >= _fee, "Not enough Ether provided for payment of Legal Fees!");
+        _;
+    }
+    
+    function identifyLovers  (string memory _name, address payable _party) payable public
+   {
+        ids = ids+1;
+        
+       match [ids] = Investor (_nameOfInvestor, _accountOfInvestor, msg.value, _sharesAcquired, ids);
+    
+        emit remainingShares (msg.sender, sharesAvailable);
+    }
+    
+    function commit () payable public onlyWhileUncommitted costs (1 ether)
+    {
+        currentStatus = statuses.Dating;
+        party1.transfer(msg.value);
+        emit Occupy (msg.sender, msg.value);
+    }
+    
+    receive () external payable onlyWhileVacant costs (2 ether)
+    {
+        currentStatus = Statuses.Occupied;
+        owner.transfer(msg.value);
+        emit Occupy (msg.sender, msg.value);
+    }    
+    
+    function book () payable public 
+    //check price and check status
+    {
+        require (msg.value >= 2 ether, "Not enough Ether provided."); 
+        require (currentStatus == Statuses.Vacant, "Currently occupied.");
+        currentStatus = Statuses.Occupied;
+        owner.transfer(msg.value);
+    }
+    
+    
+}
