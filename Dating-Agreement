@@ -11,13 +11,14 @@ contract DatingAgreement
     }
     
     address payable public lawyer;
+    uint ids;
     
-    mapping (address => loversMatch) hooked;
+    mapping (uint => Lovers) hooked;
     
-    event statusCommitment (hooked, statuses);
+    event statusCommitment (address, statuses);
     event feesReceived (address, uint256, string);
     
-    enum statuses { Single, Dating, CommonLawMarriage }
+    enum statuses {Single, Dating}
     statuses currentStatus;
     
     constructor () public
@@ -40,30 +41,47 @@ contract DatingAgreement
     
     function identifyLovers  (string memory _name, address payable _party) payable public costs (1 ether)
    {
+        _party = msg.sender;
+        
         ids = ids+1;
         
-        hooked [ids] = Lovers (_name, _party, msg.value,ids);
+        hooked [ids] = Lovers (_name, _party,ids);
     }
     
     function commit () payable public
     {
-        currentStatus = statuses.Dating;
-        msg.sender.transfer (msg.value);
-        lawyer.transfer (msg.value);
-        emit statusCommitment (hooked, statuses);
+        for (uint i =1; i <= 2; i++)
+            {
+            currentStatus = statuses.Dating;
+            msg.sender.transfer (msg.value);
+            emit statusCommitment (msg.sender, currentStatus);
+            }
     }
     
     function payFee () external payable
     {
-        lawyer.transfer (msg.value);
+        lawyer.transfer (address(this).balance);
         emit feesReceived (msg.sender, msg.value, "Legal Fees received. Thank You!");
     }    
+    
+    
+    function confirmStatus () public view returns (address, address)
+    {
+        return hooked[1];
+        return hooked[2];
+        return currentStatus= statuses.Dating;
+    }
     
     function commitFurther () payable public costs (1 ether) 
     {
         require (msg.value >= 1 ether, "Not enough Ether provided."); 
         require (currentStatus == statuses.Dating, "Already Committed.");
-        require ( );
+        
+        for (uint i =1; i <= 2; i++)
+            {
+                Lovers memory hooked = hooked[1];
+                hooked[1] = msg.sender;
+            }
         currentStatus = statuses.CommonLawMarriage;
         msg.sender.transfer(msg.value);
         
