@@ -11,6 +11,7 @@ contract RelationshipContract
     
     address payable public lawyer;
     uint totalConsent;
+    uint loversInvolved;
     
     Lovers [] public hooked;
     
@@ -26,44 +27,66 @@ contract RelationshipContract
     {
         lawyer = 0x888cDa7b74D2364FfBA6c27FeFF2237501B85DF6;
         currentStatus = statuses.Single;
+        address _mainLover;
     }
     
     
-    modifier costs (uint _fee)
+    modifier minimumLovers ()
     {  
-        require (msg.value >= _fee, "Not enough Ether provided for payment of Legal Fees!");
+        require (loversInvolved >= 2, "Not enough Parties to the Contract");
         _;
     }
     
-    function identifyLovers (string memory _name, address payable _party) payable public costs (1 ether)
-   {
-        _party = msg.sender;
+    function identifyLovers (string memory _name, address payable _party) public returns (bool) 
+    {
+        require(msg.sender == _mainLover, "Only one of the Parties is responsible for informing the other's name and address.");
         Lovers memory storeLovers = Lovers (_name, _party);
         hooked.push(storeLovers);
+        hooked[_party]=true;
+        loversInvolved = loversInvolved + 1;
+        return true;
     }
     
-    function commit (uint _loversInvolved, uint _consent) payable public
+    function denyLovers (string memory _name, address payable _party) public returns (bool) 
     {
-        uint consent;
-        if (_consent == 1) 
+        require(msg.sender == _mainLover, "Only one of the Parties is responsible for informing the other's name and address.");
+        require(hooked[_party] == true, "Party not found");
+        hooked[_party] = false;
+        loversInvolved = loversInvolved - 1;
+        return true;
+    }
+    
+    function commitment (uint _consent1, uint _consent2) payable public minimumLovers
+    {
+        require (msg.sender == _mainLover || msg.sender == hooked[_party]);
+        
+        uint consent1;
+        if (_consent1 == 1) 
         {
-            consent = consent + 1;
-        } else if (_consent == 2) {
-            consent = consent +0;
+            consent1 = consent1 + 1;
+            emit consentDeclarationIssued(msg.sender, "You just accepted the commitment to date!");
+        } else if (_consent1 == 2) {
+            consent1 = consent1 +0;
         }
         
-        emit consentDeclarationIssued(msg.sender, "Your consent declaration has been logged!");
+        uint consent2;
+        if (_consent2 == 1) 
+        {
+            consent2 = consent2 + 1;
+            emit consentDeclarationIssued(msg.sender, "You just accepted a separate property marital property system.");
+        } else if (_consent1 == 2) {
+            consent1 = consent1 +0;
+        }
         
-        if (consent == _loversInvolved)
+        if (consent1 == loversInvolved || consent2 == loversInvolved)
         {
             currentStatus = statuses.Dating;
             msg.sender.transfer (msg.value);
             emit statusCommitment (msg.sender, currentStatus);
-        } else 
-            { 
+        } else { 
             emit changeStatusFailed (msg.sender, "No change of relationship status verified due to lack of consent."); 
-            }
-            
+        }
+    }       
     
     function payFee () external payable
     {
@@ -72,10 +95,11 @@ contract RelationshipContract
     }    
     
     
-    function confirmStatus () public view returns (address, address)
+    function confirmStatus () public view returns (Lovers)
     {
-        return hooked[1].party; 
-        return hooked[2].party;
+        return hooked[Lovers]; 
+        return block.timestamp (uint);
+        return currentStatus;
     }
     
     function commitFurther () payable public costs (1 ether) 
