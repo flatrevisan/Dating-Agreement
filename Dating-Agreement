@@ -19,7 +19,7 @@ contract RelationshipContract
     
     event consentDeclarationIssued (address, string);
     event statusCommitment (address, statuses);
-    event changeStatusFailed (address,statuses);
+    event changeStatusFailed (address,string);
     event feesReceived (address, uint256, string);
     
     enum statuses {Single, Dating, CommonLawMarriage}
@@ -39,7 +39,7 @@ contract RelationshipContract
     
     modifier minimumLovers ()
     {  
-        require (loversInvolved >= 2, "Not enough Parties to the Contract");
+        require (loversInvolved >= 1, "Not enough Parties to the Contract");
         _;
     }
     
@@ -54,13 +54,13 @@ contract RelationshipContract
     function denyLovers (string memory _name, address payable _party) public 
     {
         require(msg.sender == mainLover, "Only one of the Parties is responsible for informing the other's name and address.");
-        require(hooked[_party] == true, "Party not found");
+        
         loversInvolved = loversInvolved - 1;
     }
     
     function commitment (uint _consent1, uint _consent2) payable public minimumLovers
     {
-        require (msg.sender == mainLover || msg.sender == hooked.party);
+        require (msg.sender == mainLover);
         
         uint consent1;
         if (_consent1 == 1) 
@@ -99,7 +99,7 @@ contract RelationshipContract
     
     function confirmStatus () public view returns (string memory, address, uint256, statuses)
     {
-        return hooked[Lovers]; 
+        return (hooked.name, hooked.party); 
         return mainLover;
         return mainLoverName;
         return block.timestamp;
