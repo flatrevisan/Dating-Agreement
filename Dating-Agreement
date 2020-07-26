@@ -9,6 +9,8 @@ contract RelationshipContract
         address payable party;
     }
     
+    address payable mainLover;
+    string mainLoverName;
     address payable public lawyer;
     uint totalConsent;
     uint loversInvolved;
@@ -23,13 +25,17 @@ contract RelationshipContract
     enum statuses {Single, Dating, CommonLawMarriage}
     statuses currentStatus;
     
-    constructor () public
+    constructor (
+        address payable _mainLover, 
+        string memory _mainLoverName) public
+    
     {
         lawyer = 0x888cDa7b74D2364FfBA6c27FeFF2237501B85DF6;
         currentStatus = statuses.Single;
-        address _mainLover;
+        mainLover = _mainLover;
+        mainLoverName = _mainLoverName;
+        
     }
-    
     
     modifier minimumLovers ()
     {  
@@ -37,28 +43,24 @@ contract RelationshipContract
         _;
     }
     
-    function identifyLovers (string memory _name, address payable _party) public returns (bool) 
+    function identifyLovers (string memory _name, address payable _party) public
     {
-        require(msg.sender == _mainLover, "Only one of the Parties is responsible for informing the other's name and address.");
+        require(msg.sender == mainLover, "Only one of the Parties is responsible for informing the other's name and address.");
         Lovers memory storeLovers = Lovers (_name, _party);
         hooked.push(storeLovers);
-        hooked[_party]=true;
         loversInvolved = loversInvolved + 1;
-        return true;
     }
     
-    function denyLovers (string memory _name, address payable _party) public returns (bool) 
+    function denyLovers (string memory _name, address payable _party) public 
     {
-        require(msg.sender == _mainLover, "Only one of the Parties is responsible for informing the other's name and address.");
+        require(msg.sender == mainLover, "Only one of the Parties is responsible for informing the other's name and address.");
         require(hooked[_party] == true, "Party not found");
-        hooked[_party] = false;
         loversInvolved = loversInvolved - 1;
-        return true;
     }
     
     function commitment (uint _consent1, uint _consent2) payable public minimumLovers
     {
-        require (msg.sender == _mainLover || msg.sender == hooked[_party]);
+        require (msg.sender == mainLover || msg.sender == hooked.party);
         
         uint consent1;
         if (_consent1 == 1) 
@@ -95,27 +97,13 @@ contract RelationshipContract
     }    
     
     
-    function confirmStatus () public view returns (Lovers)
+    function confirmStatus () public view returns (string memory, address, uint256, statuses)
     {
         return hooked[Lovers]; 
-        return block.timestamp (uint);
+        return mainLover;
+        return mainLoverName;
+        return block.timestamp;
         return currentStatus;
     }
-    
-    function commitFurther () payable public costs (1 ether) 
-    {
-        require (msg.value >= 1 ether, "Not enough Ether provided."); 
-        require (currentStatus == statuses.Dating, "Already Committed.");
-        
-        for (uint i =1; i <= 2; i++)
-            {
-                Lovers memory hooked = hooked[1];
-                hooked[1] = msg.sender;
-            }
-        currentStatus = statuses.CommonLawMarriage;
-        msg.sender.transfer(msg.value);
-        
-    }
-    
     
 }
