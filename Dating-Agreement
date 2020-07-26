@@ -1,24 +1,25 @@
 //SPDX-License-Identifier: CC-BY-4.0
 pragma solidity 0.6.10;
 
-contract DatingAgreement 
+contract RelationshipContract
 {
     struct Lovers 
     {
         string name;
         address payable party;
-        uint id;
     }
     
     address payable public lawyer;
-    uint ids;
+    uint totalConsent;
     
-    mapping (uint => Lovers) hooked;
+    Lovers [] public hooked;
     
+    event consentDeclarationIssued (address, string);
     event statusCommitment (address, statuses);
+    event changeStatusFailed (address,statuses);
     event feesReceived (address, uint256, string);
     
-    enum statuses {Single, Dating}
+    enum statuses {Single, Dating, CommonLawMarriage}
     statuses currentStatus;
     
     constructor () public
@@ -27,11 +28,6 @@ contract DatingAgreement
         currentStatus = statuses.Single;
     }
     
-    modifier onlyWhileUncommitted
-    {
-        require (currentStatus == statuses.Single, 'Currently in a committed relationship.');
-        _;
-    }
     
     modifier costs (uint _fee)
     {  
@@ -39,24 +35,35 @@ contract DatingAgreement
         _;
     }
     
-    function identifyLovers  (string memory _name, address payable _party) payable public costs (1 ether)
+    function identifyLovers (string memory _name, address payable _party) payable public costs (1 ether)
    {
         _party = msg.sender;
-        
-        ids = ids+1;
-        
-        hooked [ids] = Lovers (_name, _party,ids);
+        Lovers memory storeLovers = Lovers (_name, _party);
+        hooked.push(storeLovers);
     }
     
-    function commit () payable public
+    function commit (uint _loversInvolved, uint _consent) payable public
     {
-        for (uint i =1; i <= 2; i++)
-            {
+        uint consent;
+        if (_consent == 1) 
+        {
+            consent = consent + 1;
+        } else if (_consent == 2) {
+            consent = consent +0;
+        }
+        
+        emit consentDeclarationIssued(msg.sender, "Your consent declaration has been logged!");
+        
+        if (consent == _loversInvolved)
+        {
             currentStatus = statuses.Dating;
             msg.sender.transfer (msg.value);
             emit statusCommitment (msg.sender, currentStatus);
+        } else 
+            { 
+            emit changeStatusFailed (msg.sender, "No change of relationship status verified due to lack of consent."); 
             }
-    }
+            
     
     function payFee () external payable
     {
