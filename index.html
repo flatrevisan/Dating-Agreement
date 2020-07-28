@@ -6,10 +6,6 @@
   <title>ContratoDeNamoro</title>
   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css">
   <link rel="stylesheet" href="estilo.css">
-  <style>
-    p.double {border-style: double;}
-    .center {text-align : center;}
-  </style>
 </head>
 <body>
     <div class="container">
@@ -40,74 +36,74 @@
     <form name="formNamoro" id="formNamoro">
         <fieldset>
             <div>
-                <label for="_loversInvolved" class="textoImportante"style="font-size:80%" style="display: none;"> Número de Pessoas Envolvidas no Relacionamento: </label>
+                <label for="_loversInvolved" class="textoImportante"style="font-size:80%" > Número de Pessoas Envolvidas no Relacionamento: </label>
                 <br>
                 <input type="number" id="_loversInvolved" name="_loversInvolved" size="60" maxlength="60" >
                 <br>
                 <br>
             </div>
             <div>
-                <label for="_mainLover" class="textoImportante"style="font-size:80%" style="display: none;"> Endereço Ethereum do(a) Namorado(a) 1: </label>
+                <label for="_mainLover" class="textoImportante"style="font-size:80%"> Endereço Ethereum do(a) Namorado(a) 1: </label>
                 <br>
                 <input type="text" id="_mainLover" name="_mainLover" size="60" maxlength="60" >
                 <br>
                 <br>
             </div>
             <div>
-                <label for="_mainLoverName" class="textoImportante" style="font-size:80%" style="display: none;">Nome do(a) Namorado(a) 1:</label>
+                <label for="_mainLoverName" class="textoImportante" style="font-size:80%">Nome do(a) Namorado(a) 1:</label>
                 <br>
                 <input type="text" name="_mainLoverName" id="_mainLoverName" size="100">
                 <br>
                 <br>
             </div>
             <div>
-                <label for="_party" class="textoImportante" style="font-size:80%" style="display: none;">Endereço Ethereum do(a) Namorado(a) 2:</label>
+                <label for="_party" class="textoImportante" style="font-size:80%" >Endereço Ethereum do(a) Namorado(a) 2:</label>
                 <br>
                 <input type="text" name="_party2" id="_party2" size="60" maxlength="60" >
                 <br>
                 <br>
             </div>
             <div>
-                <label for="_name" class="textoImportante" style="font-size:80%" style="display: none;">Nome do(a) Namorado(a) 2:</label>
+                <label for="_name" class="textoImportante" style="font-size:80%" >Nome do(a) Namorado(a) 2:</label>
                 <br>
                 <input type="text" name="_name2" id="_name2" size="100">
                 <br>
                 <br>
             </div>
             <div>
-                <label for="_party" class="textoImportante" style="font-size:80%" style="display: none;">Endereço Ethereum do(a) Namorado(a) 3:</label>
+                <label for="_party" class="textoImportante" style="font-size:80%" >Endereço Ethereum do(a) Namorado(a) 3:</label>
                 <br>
                 <input type="text" name="_party3" id="_party3" size="60" maxlength="60" >
                 <br>
                 <br>
             </div>
             <div>
-                <label for="_name" class="textoImportante" style="font-size:80%" style="display: none;">Nome do(a) Namorado(a) 3:</label>
+                <label for="_name" class="textoImportante" style="font-size:80%" >Nome do(a) Namorado(a) 3:</label>
                 <br>
                 <input type="text" name="_name3" id="_name3" size="100">
                 <br>
                 <br>
             </div>
             <div>
-                <label for="_party" class="textoImportante" style="font-size:80%" style="display: none;">Endereço Ethereum do(a) Namorado(a) 4:</label>
+                <label for="_party" class="textoImportante" style="font-size:80%" >Endereço Ethereum do(a) Namorado(a) 4:</label>
                 <br>
                 <input type="text" name="_party4" id="_party4" size="60" maxlength="60" >
                 <br>
                 <br>
             </div>
             <div>
-                <label for="_name" class="textoImportante" style="font-size:80%" style="display: none;">Nome do(a) Namorado(a) 4:</label>
+                <label for="_name" class="textoImportante" style="font-size:80%" >Nome do(a) Namorado(a) 4:</label>
                 <br>
                 <input type="text" name="_name4" id="_name4" size="100">
                 </div>
                 <div>
                 <div>
                 <br>
-                <button id="btnSalvar" style="display: none;" class="textoImportante" style="font-size:70%" onclick="salvarRegistro();" disabled> ❤️ Salvar</button>
+                <button id="btnSalvar" class="textoImportante" style="font-size:70%" onclick="salvarRegistro();" disabled> ❤️ Salvar</button>
             </div>
         </fieldset>
     </form>
-    <div id= "preencherConsentimento" style="display: none;">
+    <div id= "preencherConsentimento">
         <br>
         <p>Para dar andamento e preencher o formulário de consentimento, conecte-se ao Metamask. <br>
         Essa operação terá o custo de honorários advocatícios de 500WEI por parte envolvida."</p>
@@ -115,7 +111,7 @@
         <br>
         <button class="textoImportante" style="font-size:70%" onclick="fazerPagamento();">⚖️ Pagar Honorários Advocatícios para Prosseguir ⚖️</button>
     </div>
-    <section id="consent1" style="display: none;">
+    <section id="consent1">
         <div>
             <br>
             <br>
@@ -135,7 +131,7 @@
             <br>
         </div>
     </section> 
-    <section id="consent2" style="display: none;">
+    <section id="consent2">
         <div>
             <h2>Regime de Bens</h2>
             <p>Embora esta seja apenas uma relação de namoro, as partes esclarecem que o relacionamento estabelecido <br>
@@ -150,7 +146,7 @@
             <br>
             </div>
     </section>  
-   <section id="confirmStatus" style="display: none;">
+   <section id="confirmStatus">
        <div style="background-color:palegoldenrod;padding:20px;" class="double">
             <br>
             <div class= "center">
