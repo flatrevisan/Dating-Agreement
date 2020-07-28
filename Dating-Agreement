@@ -14,6 +14,7 @@ contract RelationshipContract
     address payable public lawyer;
     uint totalConsent;
     uint loversInvolved;
+    uint fees;
     
     Lovers [] public hooked;
     
@@ -22,19 +23,20 @@ contract RelationshipContract
     event changeStatusFailed (address,string);
     event feesReceived (address, uint256, string);
     
-    enum statuses {Single, Dating, CommonLawMarriage}
+    enum statuses {Single, Dating}
     statuses currentStatus;
     
     constructor (
         address payable _mainLover, 
-        string memory _mainLoverName) public
+        string memory _mainLoverName,
+        uint256 _loversInvolved) public
     
     {
         lawyer = 0x888cDa7b74D2364FfBA6c27FeFF2237501B85DF6;
         currentStatus = statuses.Single;
         mainLover = _mainLover;
         mainLoverName = _mainLoverName;
-        
+        loversInvolved = _loversInvolved;
     }
     
     modifier minimumLovers ()
@@ -43,22 +45,26 @@ contract RelationshipContract
         _;
     }
     
-    function identifyLovers (string memory _name, address payable _party) public
+    modifier costs ()
+    {
+        require (fees>= 500);
+        _;
+    }
+    
+    function identifyLovers (string memory _name, address payable _party) public costs 
     {
         require(msg.sender == mainLover, "Only one of the Parties is responsible for informing the other's name and address.");
         Lovers memory storeLovers = Lovers (_name, _party);
         hooked.push(storeLovers);
-        loversInvolved = loversInvolved + 1;
     }
     
-    function denyLovers (string memory _name, address payable _party) public 
+    function denyLovers (string memory _name, address payable _party) public costs
     {
         require(msg.sender == mainLover, "Only one of the Parties is responsible for informing the other's name and address.");
         
-        loversInvolved = loversInvolved - 1;
     }
     
-    function commitment (uint _consent1, uint _consent2) payable public minimumLovers
+    function commitment (uint _consent1, uint _consent2) payable public minimumLovers costs
     {
         require (msg.sender == mainLover);
         
@@ -97,13 +103,17 @@ contract RelationshipContract
     }    
     
     
-    function confirmStatus () public view returns (string memory, address, uint256, statuses)
+    function confirmStatus () public view returns (string memory, address payable, address payable, string memory, uint256)
     {
-        return (hooked.name, hooked.party); 
+        for(uint i = 0; i<= loversInvolved; i++)
+            {return hooked[i].name; 
+            }
+        for(uint i = 0; i<= loversInvolved; i++)
+            {return hooked[i].party;
+            }
         return mainLover;
         return mainLoverName;
         return block.timestamp;
-        return currentStatus;
     }
     
 }
