@@ -16,7 +16,7 @@ contract RelationshipContract
     uint loversInvolved;
     uint fees;
     
-    Lovers [] public hooked;
+    Lovers [] hooked;
     
     event consentDeclarationIssued (address, string);
     event statusCommitment (address, statuses);
@@ -58,16 +58,9 @@ contract RelationshipContract
         hooked.push(storeLovers);
     }
     
-    function denyLovers (string memory _name, address payable _party) public costs
-    {
-        require(msg.sender == mainLover, "Only one of the Parties is responsible for informing the other's name and address.");
-        
-    }
     
     function commitment (uint _consent1, uint _consent2) payable public minimumLovers costs
     {
-        require (msg.sender == mainLover);
-        
         uint consent1;
         if (_consent1 == 1) 
         {
@@ -101,19 +94,5 @@ contract RelationshipContract
         lawyer.transfer (address(this).balance);
         emit feesReceived (msg.sender, msg.value, "Legal Fees received. Thank You!");
     }    
-    
-    
-    function confirmStatus () public view returns (string memory, address payable, address payable, string memory, uint256)
-    {
-        for(uint i = 0; i<= loversInvolved; i++)
-            {return hooked[i].name; 
-            }
-        for(uint i = 0; i<= loversInvolved; i++)
-            {return hooked[i].party;
-            }
-        return mainLover;
-        return mainLoverName;
-        return block.timestamp;
-    }
     
 }
