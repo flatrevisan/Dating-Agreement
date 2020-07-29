@@ -48,11 +48,12 @@ contract RelationshipContract
         _;
     }
     
-    function identifyLovers (string memory _name, address payable _party) public  
+    function identifyLovers (uint256 _loversInvolved, string memory _name, address payable _party) public  
     {
         require(msg.sender == lawyer, "Only the Lawyer can provide the party's information.");
         Lovers memory storeLovers = Lovers (_name, _party, false, true, 0);
         hooked.push(storeLovers);
+        loversInvolved = _loversInvolved;
     }
     
     function commitment (uint _loverId, uint256 _consent1, uint256 _consent2) payable public costs
