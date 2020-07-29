@@ -7,18 +7,21 @@ contract RelationshipContract
     {
         string name;
         address payable party;
+        bool signed;
+        bool exist;
+        uint dateSigned;
     }
     
-    address payable mainLover;
-    string mainLoverName;
     address payable public lawyer;
-    uint totalConsent;
-    uint loversInvolved;
-    uint fees;
+    uint256 public totalConsent;
+    uint256 public loversInvolved;
+    uint256 public fees;
+    uint256 public consent2;
+    uint256 public consent1;
     
     Lovers [] hooked;
     
-    event consentDeclarationIssued (address, string);
+    event consentDeclarationIssued (address,string);
     event statusCommitment (address, statuses);
     event changeStatusFailed (address,string);
     event feesReceived (address, uint256, string);
@@ -26,17 +29,11 @@ contract RelationshipContract
     enum statuses {Single, Dating}
     statuses currentStatus;
     
-    constructor (
-        address payable _mainLover, 
-        string memory _mainLoverName,
-        uint256 _loversInvolved) public
+    constructor () public
     
     {
         lawyer = 0x888cDa7b74D2364FfBA6c27FeFF2237501B85DF6;
         currentStatus = statuses.Single;
-        mainLover = _mainLover;
-        mainLoverName = _mainLoverName;
-        loversInvolved = _loversInvolved;
     }
     
     modifier minimumLovers ()
@@ -51,38 +48,36 @@ contract RelationshipContract
         _;
     }
     
-    function identifyLovers (string memory _name, address payable _party) public costs 
+    function identifyLovers (string memory _name, address payable _party) public  
     {
-        require(msg.sender == mainLover, "Only one of the Parties is responsible for informing the other's name and address.");
-        Lovers memory storeLovers = Lovers (_name, _party);
+        require(msg.sender == lawyer, "Only the Lawyer can provide the party's information.");
+        Lovers memory storeLovers = Lovers (_name, _party, false, true, 0);
         hooked.push(storeLovers);
     }
     
-    
-    function commitment (uint _consent1, uint _consent2) payable public minimumLovers costs
+    function commitment (uint _loverId, uint256 _consent1, uint256 _consent2) payable public costs
     {
-        uint consent1;
+        Lovers storage lover = hooked[_loverId];
+        require (lover.exist, "Invalid Lover Id");
+        require (!lover.signed, "You cannot sign twice.");
+        
         if (_consent1 == 1) 
         {
             consent1 = consent1 + 1;
             emit consentDeclarationIssued(msg.sender, "You just accepted the commitment to date!");
-        } else if (_consent1 == 2) {
-            consent1 = consent1 +0;
         }
         
-        uint consent2;
         if (_consent2 == 1) 
         {
             consent2 = consent2 + 1;
             emit consentDeclarationIssued(msg.sender, "You just accepted a separate property marital property system.");
-        } else if (_consent1 == 2) {
-            consent1 = consent1 +0;
         }
         
         if (consent1 == loversInvolved || consent2 == loversInvolved)
         {
             currentStatus = statuses.Dating;
-            msg.sender.transfer (msg.value);
+            lover.signed=true;
+            lover.dateSigned=now;
             emit statusCommitment (msg.sender, currentStatus);
         } else { 
             emit changeStatusFailed (msg.sender, "No change of relationship status verified due to lack of consent."); 
