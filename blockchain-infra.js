@@ -56,5 +56,4 @@ function gerenciaTrocaDeSelecaoDeContas(_contas) {
   signatario = provedorDeSignatarios.getSigner();
   contratoComSignatario = new ethers.Contract(enderecoContrato, abiContrato, signatario);
   console.log("gerenciaTrocaDeSelecaoDeEndereco contratoComSignatario", contratoComSignatario);
-  buscarDadosDoContratoInteligente();
 }
