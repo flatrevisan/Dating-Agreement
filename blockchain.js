@@ -1,30 +1,17 @@
 function identifyLovers() {
-    event.informacoesCorretas();
-    if ($("#_loversInvolved").val().length <=10) {
-      $("#_loversInvolved").focus();
-      alert("Número Inválido");
-      return;
-    }
-  
-    if (!$("#_party").val().startsWith("0x")) {
-      alert("Endereço inválido");
-      $("#_endereco").focus();
-      return;
-    }
-  
-    if ($("#_name").val().length < 5) {
-      alert("Nome inválido");
-      $("#_name").focus();
-      return;
-    }
   
     if (typeof contratoComSignatario === "undefined") {
       alert("Você não está conectado ao Ethereum. Verifique seu Metamask");
       return;
     }
 
+    var additionalSettings = {
+        value: ethers.utils.parseUnits(500, 'wei')
+    };
+
+
     contratoComSignatario
-    .commitment($("#_loverId").val(), $("#_consent1").val(), $("#_consent2").val())
+    .commitment($("#_loverId").val(), $("#_consent1").val(), $("#_consent2").val(), additionalSettings)
     .then((transacao) => {
       $("#descricaoStatusTransacoes").html("Transação enviada. Aguarde pela mineração...");
       $("#statusTransacoes").toggle();
