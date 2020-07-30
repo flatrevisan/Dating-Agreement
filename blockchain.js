@@ -6,7 +6,7 @@ function identifyLovers() {
     }
 
     var additionalSettings = {
-        value: ethers.utils.parseUnits(500, 'wei')
+        value:500
     };
 
 
