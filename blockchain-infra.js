@@ -51,9 +51,10 @@ function gerenciaTrocaDeSelecaoDeContas(_contas) {
   }
   if (contas[0] !== contaAtual) {
     contaAtual = contas[0];
-    }
   }
+  
   signatario = provedorDeSignatarios.getSigner();
   contratoComSignatario = new ethers.Contract(enderecoContrato, abiContrato, signatario);
+  console.log("gerenciaTrocaDeSelecaoDeEndereco contratoComSignatario", contratoComSignatario);
   buscarDadosDoContratoInteligente();
-;
+}
